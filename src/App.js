@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Dashboard from "./Dashboard";
 
 const SUPABASE_URL = "https://jwdecztufhdmzpozxeoe.supabase.co";
 const SUPABASE_KEY = "sb_publishable_QsxezHz7a8y8z3ra2FkV6A__d_Xwg6l";
@@ -70,6 +71,7 @@ const navBtnStyle = {
 const STEPS = ["Service","Dentist","Date","Time","Your Info","Confirm"];
 
 export default function App() {
+  const [showDashboard, setShowDashboard] = useState(false);
   const [step, setStep] = useState(0);
   const [selected, setSelected] = useState({ service: null, dentist: null, date: null, time: null });
   const [form, setForm] = useState({ name: "", email: "", phone: "", notes: "" });
@@ -195,6 +197,8 @@ export default function App() {
     );
   }
 
+  if (showDashboard) return <Dashboard onBack={() => setShowDashboard(false)} />;
+
   if (booked) {
     const svc = services.find(s => s.id === selected.service);
     const dent = dentists.find(d => d.id === selected.dentist) || dentists[0];
@@ -238,14 +242,18 @@ export default function App() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f0f9ff", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: 20 }}>
+    <div style={{ minHeight: "100vh", background: "#f0f9ff", display: "flex", flexDirection: "column", alignItems: "center", padding: 20 }}>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+      <div style={{ width: "100%", maxWidth: 480, textAlign: "right", marginBottom: 8 }}>
+        <button onClick={() => setShowDashboard(true)} style={{ background: "none", border: "none", color: "#94a3b8", fontSize: 12, cursor: "pointer", textDecoration: "underline" }}>
+          Dentist Login →
+        </button>
+      </div>
       <div style={widgetWrap}>
         <div style={{ background: "linear-gradient(135deg,#0ea5e9,#14b8a6)", padding: "24px 28px 20px" }}>
           <h1 style={{ color: "#fff", fontSize: 22, fontWeight: 700, display: "flex", alignItems: "center", gap: 10 }}>🦷 Book Appointment</h1>
           <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 13, marginTop: 4 }}>Live availability · Powered by Supabase</p>
         </div>
-
         <div style={{ display: "flex", padding: "16px 28px 0" }}>
           {STEPS.map((s, i) => (
             <div key={s} style={{ flex: 1, display: "flex", alignItems: "center" }}>
@@ -259,7 +267,6 @@ export default function App() {
             </div>
           ))}
         </div>
-
         <div style={{ padding: "20px 28px 28px" }}>
           {step === 0 && (
             <div>
@@ -286,7 +293,6 @@ export default function App() {
               </div>
             </div>
           )}
-
           {step === 1 && (
             <div>
               <p style={{ fontSize: 13, color: "#64748b", marginBottom: 14, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Choose Your Dentist</p>
@@ -306,7 +312,6 @@ export default function App() {
               </button>
             </div>
           )}
-
           {step === 2 && (
             <div>
               <p style={{ fontSize: 13, color: "#64748b", marginBottom: 14, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Pick a Date</p>
@@ -314,7 +319,6 @@ export default function App() {
               <button disabled={!selected.date} onClick={() => setStep(3)} style={{ ...primaryBtn, marginTop: 20, opacity: selected.date ? 1 : 0.4 }}>See Available Times →</button>
             </div>
           )}
-
           {step === 3 && (
             <div>
               <p style={{ fontSize: 13, color: "#64748b", marginBottom: 4, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Available Times</p>
@@ -337,7 +341,6 @@ export default function App() {
               <button disabled={!selected.time} onClick={() => setStep(4)} style={{ ...primaryBtn, marginTop: 20, opacity: selected.time ? 1 : 0.4 }}>Continue →</button>
             </div>
           )}
-
           {step === 4 && (
             <div>
               <p style={{ fontSize: 13, color: "#64748b", marginBottom: 16, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Your Details</p>
@@ -354,7 +357,6 @@ export default function App() {
               <button disabled={!form.name||!form.email||!form.phone} onClick={() => setStep(5)} style={{ ...primaryBtn, opacity: form.name&&form.email&&form.phone ? 1 : 0.4 }}>Review Booking →</button>
             </div>
           )}
-
           {step === 5 && (
             <div>
               <p style={{ fontSize: 13, color: "#64748b", marginBottom: 16, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>Confirm Your Booking</p>
@@ -373,10 +375,8 @@ export default function App() {
               </button>
             </div>
           )}
-
           {step > 0 && <button onClick={() => setStep(s => s-1)} style={{ background: "none", border: "none", color: "#94a3b8", cursor: "pointer", fontSize: 13, marginTop: 14, padding: 0 }}>← Back</button>}
         </div>
-
         <div style={{ borderTop: "1px solid #f1f5f9", padding: "12px 28px", display: "flex", justifyContent: "space-between" }}>
           <span style={{ fontSize: 11, color: "#cbd5e1" }}>🔒 Secure booking</span>
           <span style={{ fontSize: 11, color: "#cbd5e1" }}>Powered by DentaBook AI</span>
