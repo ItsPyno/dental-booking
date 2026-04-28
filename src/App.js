@@ -148,6 +148,19 @@ export default function App() {
         patient_phone: form.phone, notes: form.notes || null, status: "confirmed",
       });
       setBooked(true);
+      setBooked(true);
+      await fetch("/api/send-confirmation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          patientName: form.name,
+          patientEmail: form.email,
+          service: services.find(s => s.id === selected.service)?.label,
+          dentist: dentists.find(d => d.id === selected.dentist)?.name || "First Available",
+          date: selected.date?.toLocaleDateString("en-US", {weekday:"long", month:"long", day:"numeric"}),
+          time: selected.time,
+        })
+      });
     } catch(e) {
       setBookingError((e.message||"").includes("unique")
         ? "That slot was just taken. Please go back and choose another time."
